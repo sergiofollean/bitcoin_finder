@@ -6,6 +6,9 @@
       <sshConfig authType="PASSWORD" host="70.34.242.96" id="24331f2c-1258-42e6-b0e8-fd7916a733a6" port="22" customName="Fastest server 1" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
         <option name="customName" value="Fastest server 1" />
       </sshConfig>
+      <sshConfig authType="PASSWORD" host="144.202.19.104" id="fb87dea8-f72d-4d83-9604-842b8f33e462" port="22" customName="server 2" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
+        <option name="customName" value="server 2" />
+      </sshConfig>
     </configs>
   </component>
 </project>

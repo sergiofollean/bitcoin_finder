@@ -72,16 +72,25 @@ const parser = () => {
     readStream.on('data', (chunk) => {
         let lines = chunk.toString().split('\n');
 
-        let addressToCheck;
-        const privateKey = new bitcore.PrivateKey();
-        addressToCheck = privateKey.toAddress().toString();
-        // addressToCheck = '18xixV7nVhUvn2nVAkfNec1QkU5jH9Pg9c';
-        checkedPrivateKeys++;
+        let addressesToCheck = [];
+        for (let i = 0; i < 10; i++) {
+            const privateKey = new bitcore.PrivateKey();
+            const address = privateKey.toAddress();
+            addressesToCheck.push({
+                address: address.toString(),
+                privateKey: privateKey.toString()
+            });
+            // addressesToCheck.push({
+            //     address: '1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5',
+            //     privateKey: 'test'
+            // });
+            checkedPrivateKeys++;
+        }
 
         lines.forEach((line) => {
             const address = line.split('\t')[0];
-            if (address === addressToCheck) {
-                foundFile.write(`Address: ${address}, Private Key: ${privateKey.toString()}\n`);
+            if (addressesToCheck.some(a => a.address === address)) {
+                foundFile.write(`Address: ${address}, Private Key: ${addressesToCheck.find(a => a.address === address).privateKey}\n`);
                 found = true;
                 readStream.close();
             } else {
