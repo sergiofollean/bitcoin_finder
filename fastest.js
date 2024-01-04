@@ -66,46 +66,52 @@ const consoleInterface = () => {
 
 // setInterval(consoleInterface, 1000);
 
-const parser = () => {
-    let readStream = fs.createReadStream(addressesList);
+const parser = async () => {
+    let readStreams = [];
 
-    readStream.on('data', (chunk) => {
-        let lines = chunk.toString().split('\n');
+    for (let i = 0; i < 2; i++) {
+        readStreams.push(fs.createReadStream(addressesList));
 
-        let addressesToCheck = [];
-        for (let i = 0; i < 10; i++) {
-            const privateKey = new bitcore.PrivateKey();
-            const address = privateKey.toAddress();
-            addressesToCheck.push({
-                address: address.toString(),
-                privateKey: privateKey.toString()
-            });
-            // addressesToCheck.push({
-            //     address: '1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5',
-            //     privateKey: 'test'
-            // });
-            checkedPrivateKeys++;
-        }
+        readStreams[i].on('data', (chunk) => {
+            let lines = chunk.toString().split('\n');
 
-        lines.forEach((line) => {
-            const address = line.split('\t')[0];
-            if (addressesToCheck.some(a => a.address === address)) {
-                foundFile.write(`Address: ${address}, Private Key: ${addressesToCheck.find(a => a.address === address).privateKey}\n`);
-                found = true;
-                readStream.close();
-            } else {
-                checkedAddresses++;
+            let addressesToCheck = [];
+            for (let i = 0; i < 10; i++) {
+                const privateKey = new bitcore.PrivateKey();
+                const address = privateKey.toAddress();
+                addressesToCheck.push({
+                    address: address.toString(),
+                    privateKey: privateKey.toString()
+                });
+                // addressesToCheck.push({
+                //     address: '1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5',
+                //     privateKey: 'test'
+                // });
+                checkedPrivateKeys++;
             }
+
+            lines.forEach((line) => {
+                const address = line.split('\t')[0];
+                if (addressesToCheck.some(a => a.address === address)) {
+                    foundFile.write(`Address: ${address}, Private Key: ${addressesToCheck.find(a => a.address === address).privateKey}\n`);
+                    found = true;
+                    readStreams.forEach(rs => rs.close());
+                } else {
+                    checkedAddresses++;
+                }
+            });
+
+            consoleInterface();
         });
 
-        consoleInterface();
-    });
+        readStreams[i].on('close', () => {
+            if (!found) {
+                parser();
+            }
+        });
+    }
 
-    readStream.on('close', () => {
-        if (!found) {
-            parser();
-        }
-    });
+    await Promise.all(readStreams);
 }
 
 parser();
