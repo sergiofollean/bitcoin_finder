@@ -1,6 +1,7 @@
 import fs from 'fs';
 // import readline from 'readline';
 import bitcore from 'bitcore-lib';
+import CoinKey from 'coinkey';
 
 let addressesList = './rich_bitcoin_addresses.txt';
 let checkedAddresses = 0;
@@ -64,8 +65,6 @@ const consoleInterface = () => {
     }
 };
 
-// setInterval(consoleInterface, 1000);
-
 const parser = async () => {
     let readStreams = [];
 
@@ -75,25 +74,24 @@ const parser = async () => {
         readStreams[i].on('data', (chunk) => {
             let lines = chunk.toString().split('\n');
 
-            let addressesToCheck = [];
-            for (let i = 0; i < 10; i++) {
-                const privateKey = new bitcore.PrivateKey();
-                const address = privateKey.toAddress();
-                addressesToCheck.push({
-                    address: address.toString(),
-                    privateKey: privateKey.toString()
-                });
-                // addressesToCheck.push({
-                //     address: '1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5',
-                //     privateKey: 'test'
-                // });
+            let addressesToCheck = new Map();
+            for (let i = 0; i < 100; i++) {
+                // const privateKey = new bitcore.PrivateKey();
+                // const address = privateKey.toAddress();
+                // addressesToCheck.set(address.toString(), privateKey.toString());
+
+                const ck = new CoinKey.createRandom();
+                addressesToCheck.set(ck.publicAddress, ck.privateWif);
+
+                // addressesToCheck.set('1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5', 'test');
                 checkedPrivateKeys++;
             }
 
             lines.forEach((line) => {
                 const address = line.split('\t')[0];
-                if (addressesToCheck.some(a => a.address === address)) {
-                    foundFile.write(`Address: ${address}, Private Key: ${addressesToCheck.find(a => a.address === address).privateKey}\n`);
+                if (addressesToCheck.has(address)) {
+                    const privateKey = addressesToCheck.get(address);
+                    foundFile.write(`Address: ${address}, Private Key: ${privateKey}\n`);
                     found = true;
                     readStreams.forEach(rs => rs.close());
                 } else {
