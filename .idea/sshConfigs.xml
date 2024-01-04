@@ -3,6 +3,9 @@
   <component name="SshConfigs">
     <configs>
       <sshConfig authType="PASSWORD" host="66.42.83.108" id="816eda4e-3a47-4045-83e0-c13e1d9dcc1b" port="22" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
+      <sshConfig authType="PASSWORD" host="70.34.242.96" id="24331f2c-1258-42e6-b0e8-fd7916a733a6" port="22" customName="Fastest server 1" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
+        <option name="customName" value="Fastest server 1" />
+      </sshConfig>
     </configs>
   </component>
 </project>
