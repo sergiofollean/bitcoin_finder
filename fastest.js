@@ -18,7 +18,6 @@ const parser = async () => {
     return new Promise((resolve, reject) => {
         file.on('line', async (line) => {
             const address = line.split('\t')[0];
-            // const balance = line.split('\t')[1];
 
             let addressToCheck;
             const privateKey = new bitcore.PrivateKey();
@@ -26,7 +25,7 @@ const parser = async () => {
             // addressToCheck = '1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF';
 
             if (address === addressToCheck) {
-                foundFile.write(`Address: ${address}, Balance: ${balance}, Private Key: ${privateKey.toString()}\n`);
+                foundFile.write(`Address: ${address}, Private Key: ${privateKey.toString()}\n`);
                 found = true;
                 file.close();
             } else {
