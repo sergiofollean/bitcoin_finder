@@ -68,7 +68,7 @@ const consoleInterface = () => {
 const parser = async () => {
     let readStreams = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         readStreams.push(fs.createReadStream(addressesList));
 
         readStreams[i].on('data', (chunk) => {
