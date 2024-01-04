@@ -68,22 +68,18 @@ const consoleInterface = () => {
 const parser = async () => {
     let readStreams = [];
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 10; i++) {
         readStreams.push(fs.createReadStream(addressesList));
 
         readStreams[i].on('data', (chunk) => {
             let lines = chunk.toString().split('\n');
 
             let addressesToCheck = new Map();
-            for (let i = 0; i < 100; i++) {
-                // const privateKey = new bitcore.PrivateKey();
-                // const address = privateKey.toAddress();
-                // addressesToCheck.set(address.toString(), privateKey.toString());
-
+            for (let y = 0; y < 10; y++) {
                 const ck = new CoinKey.createRandom();
                 addressesToCheck.set(ck.publicAddress, ck.privateWif);
 
-                // addressesToCheck.set('1BLLaDo4XwNFX89XdYddgYJYDuG6RnmZD5', 'test');
+                // addressesToCheck.set('1LMqC1gXqzngR4QeBUdfS4VxpKtvqjQQMn', ck.privateWif);
                 checkedPrivateKeys++;
             }
 
@@ -103,7 +99,10 @@ const parser = async () => {
         });
 
         readStreams[i].on('close', () => {
-            if (!found) {
+            readStreams[i].destroy();
+
+            // check if no more read streams
+            if (readStreams.every(rs => rs.destroyed) && i === readStreams.length - 1 && !found) {
                 parser();
             }
         });
