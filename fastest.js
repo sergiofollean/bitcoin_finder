@@ -75,7 +75,7 @@ const parser = async () => {
             let lines = chunk.toString().split('\n');
 
             let addressesToCheck = new Map();
-            for (let y = 0; y < 10; y++) {
+            for (let y = 0; y < 100; y++) {
                 const ck = new CoinKey.createRandom();
                 addressesToCheck.set(ck.publicAddress, ck.privateWif);
 
