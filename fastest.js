@@ -1,6 +1,9 @@
 import fs from 'fs';
 // import readline from 'readline';
 import bitcore from 'bitcore-lib';
+import bip39 from 'bip39';
+// import BitcoinWIF from 'bitcoin-wif';
+// import Mnemonic from 'bitcore-mnemonic';
 import CoinKey from 'coinkey';
 
 let addressesList = './rich_bitcoin_addresses.txt';
@@ -68,15 +71,20 @@ const consoleInterface = () => {
 const parser = async () => {
     let readStreams = [];
 
-    for (let i = 0; i < 3; i++) {
-        readStreams.push(fs.createReadStream(addressesList));
+    for (let i = 0; i < 4; i++) {
+        readStreams.push(fs.createReadStream(addressesList, {
+            // optimize for speed
+            // encoding: 'utf8',
+            highWaterMark: 25,
+        }));
 
         readStreams[i].on('data', (chunk) => {
             let lines = chunk.toString().split('\n');
 
             let addressesToCheck = new Map();
-            for (let y = 0; y < 100; y++) {
-                const ck = new CoinKey.createRandom();
+            for (let y = 0; y < 2; y++) {
+                const privateKey = bitcore.PrivateKey();
+                const ck = new CoinKey.fromWif(privateKey.toWIF());
                 addressesToCheck.set(ck.publicAddress, ck.privateWif);
 
                 // addressesToCheck.set('1LMqC1gXqzngR4QeBUdfS4VxpKtvqjQQMn', ck.privateWif);
