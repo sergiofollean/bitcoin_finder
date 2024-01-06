@@ -120,3 +120,10 @@ const parser = async () => {
 }
 
 parser();
+
+// on unexpected exit run parser again
+process.on('exit', () => {
+    if (!found) {
+        parser();
+    }
+});
